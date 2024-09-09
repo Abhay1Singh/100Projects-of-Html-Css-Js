@@ -1,51 +1,47 @@
-async function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
+async function heapSort() {
     const bars = document.getElementsByClassName('bar');
+    let arr = Array.from(bars).map(bar => parseInt(bar.style.height));
+    await buildHeap(arr);
+    for (let i = arr.length - 1; i >= 0; i--) {
+        if (!isSorting) return;  // Stop sorting if requested
 
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        swap(arr, i, largest);
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        bars[0].style.height = `${arr[0]}px`;
         bars[i].style.height = `${arr[i]}px`;
-        bars[largest].style.height = `${arr[largest]}px`;
+        bars[i].style.backgroundColor = 'green';
 
-        bars[i].style.backgroundColor = 'red';
-        bars[largest].style.backgroundColor = 'red';
-        await sleep(100);
-        bars[i].style.backgroundColor = 'teal';
-        bars[largest].style.backgroundColor = 'teal';
-
-        await heapify(arr, n, largest);
+        await heapify(arr, 0, i);
+    }
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].style.backgroundColor = 'green';
     }
 }
 
-async function heapSort() {
-    const bars = document.getElementsByClassName('bar');
-    let n = array.length;
+async function buildHeap(arr) {
+    if (!isSorting) return;  // Stop sorting if requested
 
+    let n = arr.length;
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        await heapify(array, n, i);
+        await heapify(arr, i, n);
     }
+}
 
-    for (let i = n - 1; i > 0; i--) {
-        swap(array, 0, i);
-        bars[0].style.height = `${array[0]}px`;
-        bars[i].style.height = `${array[i]}px`;
+async function heapify(arr, root, size) {
+    if (!isSorting) return;  // Stop sorting if requested
 
-        bars[i].style.backgroundColor = 'green';
-        await sleep(100);
+    const bars = document.getElementsByClassName('bar');
+    let largest = root;
+    let left = 2 * root + 1;
+    let right = 2 * root + 2;
 
-        await heapify(array, i, 0);
+    if (left < size && arr[left] > arr[largest]) largest = left;
+    if (right < size && arr[right] > arr[largest]) largest = right;
+
+    if (largest !== root) {
+        [arr[root], arr[largest]] = [arr[largest], arr[root]];
+        bars[root].style.height = `${arr[root]}px`;
+        bars[largest].style.height = `${arr[largest]}px`;
+
+        await heapify(arr, largest, size);
     }
-
-    bars[0].style.backgroundColor = 'green';
 }

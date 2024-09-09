@@ -1,14 +1,26 @@
-async function mergeSortHelper(arr, l, r) {
-    if (!isSorting || l >= r) return;  // Stop if requested
+async function mergeSort() {
+    const bars = document.getElementsByClassName('bar');
+    let arr = Array.from(bars).map(bar => parseInt(bar.style.height));
+    await mergeSortHelper(arr, 0, arr.length - 1);
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].style.height = `${arr[i]}px`;
+        bars[i].style.backgroundColor = 'green';
+    }
+}
 
-    let mid = l + Math.floor((r - l) / 2);
-    await mergeSortHelper(arr, l, mid);
-    await mergeSortHelper(arr, mid + 1, r);
-    await merge(arr, l, mid, r);
+async function mergeSortHelper(arr, l, r) {
+    if (!isSorting) return;  // Stop sorting if requested
+
+    if (l < r) {
+        let mid = Math.floor((l + r) / 2);
+        await mergeSortHelper(arr, l, mid);
+        await mergeSortHelper(arr, mid + 1, r);
+        await merge(arr, l, mid, r);
+    }
 }
 
 async function merge(arr, l, mid, r) {
-    if (!isSorting) return;  // Stop if requested
+    if (!isSorting) return;  // Stop sorting if requested
 
     const bars = document.getElementsByClassName('bar');
     let n1 = mid - l + 1;
@@ -22,7 +34,8 @@ async function merge(arr, l, mid, r) {
 
     let i = 0, j = 0, k = l;
     while (i < n1 && j < n2) {
-        if (!isSorting) return;  // Stop if requested
+        if (!isSorting) return;  // Stop sorting if requested
+
         if (left[i] <= right[j]) {
             arr[k] = left[i];
             bars[k].style.height = `${left[i]}px`;
@@ -34,12 +47,13 @@ async function merge(arr, l, mid, r) {
             bars[k].style.backgroundColor = 'lightgreen';
             j++;
         }
-        await sleep(sortSpeed);
         k++;
+        await sleep(sortSpeed);
     }
 
     while (i < n1) {
-        if (!isSorting) return;
+        if (!isSorting) return;  // Stop sorting if requested
+
         arr[k] = left[i];
         bars[k].style.height = `${left[i]}px`;
         bars[k].style.backgroundColor = 'lightgreen';
@@ -49,7 +63,8 @@ async function merge(arr, l, mid, r) {
     }
 
     while (j < n2) {
-        if (!isSorting) return;
+        if (!isSorting) return;  // Stop sorting if requested
+
         arr[k] = right[j];
         bars[k].style.height = `${right[j]}px`;
         bars[k].style.backgroundColor = 'lightgreen';
