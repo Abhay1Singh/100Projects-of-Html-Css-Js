@@ -1,4 +1,5 @@
-const apikey = "Use your own api key by making on openweather website and after it will take 2-3hrs to become active";
+const apikey = "";
+// Use your own api key by making on openweather website and after it will take 2-3hrs to become active
 const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
 
 const searchbox = document.getElementById("sinput");
